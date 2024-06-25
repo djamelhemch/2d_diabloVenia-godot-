@@ -2,10 +2,20 @@ extends CharacterBody2D
 
 @onready var animation_sprite = $AnimatedSprite2D
 @onready var animation_player = $AnimationPlayer
+@onready var coyote_timer = $CoyoteTimer
+@export var speed = 185.0
 
-const speed = 185.0
-const gravity = 38
-const jump_power  = -600.0
+
+@export var jump_height : float
+@export var jump_time_to_peak : float
+@export var jump_time_to_descent : float
+
+@onready var jump_velocity : float = ((2.0 * jump_height) / jump_time_to_peak) * - 1.0
+@onready var jump_gravity : float = ((-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)) * -1.0
+@onready var fall_gravity : float = ((-2.0 * jump_height) / (jump_time_to_descent * jump_time_to_descent)) * -1.0
+
+
+const jump_power  = -615.0
 var direction
 var can_input = true
 #main state machine variable
@@ -23,10 +33,25 @@ func _physics_process(delta):
 		velocity.x = direction * speed
 	else:
 		velocity.x = move_toward(velocity.x, 0, speed)
-	velocity.y += gravity
+		
+	velocity.y += get_gravity() * delta
+	
+	var was_on_floor = is_on_floor()
 	
 	flip_sprite(direction)
 	move_and_slide()
+	
+	if was_on_floor && not is_on_floor():
+		print("started coyote timer")
+		coyote_timer.start()
+
+func get_gravity() -> float:
+	return jump_gravity if velocity.y < 0.0 else fall_gravity
+	
+func jump():
+	if is_on_floor() or !coyote_timer.is_stopped():
+		velocity.y = jump_velocity
+		print("jumping")
 func flip_sprite(direction):
 	if direction == 1:
 		animation_sprite.flip_h = false
@@ -96,7 +121,7 @@ func run_update(delta: float):
 		
 func jump_start():
 	animation_sprite.play("jump")
-	velocity.y = jump_power
+	jump()
 	print(velocity.y)
 func jump_update(delta : float):
 	if velocity.y > jump_power and not is_on_floor():
@@ -104,7 +129,6 @@ func jump_update(delta : float):
 		
 func falling_start():
 	animation_sprite.play("fall")
-	print(velocity.y)
 func falling_update(delta : float):
 	if is_on_floor():
 		main_sm.dispatch(&"state_ended")

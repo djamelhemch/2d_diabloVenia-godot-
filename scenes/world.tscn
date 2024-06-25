@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bnmrjya8ao2bm"]
+[gd_scene load_steps=13 format=3 uid="uid://bnmrjya8ao2bm"]
 
 [ext_resource type="Texture2D" uid="uid://c5d3djh42vbw6" path="res://art/tileset.png" id="1_q4axp"]
 [ext_resource type="PackedScene" uid="uid://crlvfuo63ocic" path="res://scenes/player.tscn" id="2_du2cb"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://4ey0gy4eh2jh" path="res://art/backgrounds/NightForest/Layers/4.png" id="6_78g8v"]
 [ext_resource type="Texture2D" uid="uid://cy5gi2jwcp13t" path="res://art/backgrounds/NightForest/Layers/5.png" id="7_hrhlg"]
 [ext_resource type="Texture2D" uid="uid://dw7e6miig8bb4" path="res://art/Medieval_Castle_Asset_Pack/Background/layer_3.png" id="8_omoit"]
+[ext_resource type="Texture2D" uid="uid://sb1h4c76xac3" path="res://art/measuring_background.png" id="9_p2hkc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2hrgp"]
 texture = ExtResource("1_q4axp")
@@ -819,7 +820,10 @@ layer_1/name = "2"
 layer_1/tile_data = PackedInt32Array()
 
 [node name="Player" parent="." instance=ExtResource("2_du2cb")]
-position = Vector2(21, 260)
+position = Vector2(187, 260)
+jump_height = 90.0
+jump_time_to_peak = 0.375
+jump_time_to_descent = 0.3
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
@@ -884,3 +888,7 @@ texture = ExtResource("8_omoit")
 position = Vector2(1052, 296)
 scale = Vector2(0.60625, 1.15)
 texture = ExtResource("8_omoit")
+
+[node name="jump_ruler" type="Sprite2D" parent="."]
+position = Vector2(186, 175)
+texture = ExtResource("9_p2hkc")
